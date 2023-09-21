@@ -1,0 +1,7 @@
+<meta>
+  <info author="1shingo1" type="gamemode" name="shingo" description="My Mta San Andreas"/>
+  <script src="SSpawnPlayer.lua" type="server"/>
+  <script src="CDrawId.lua" type="client"/>
+  <script src="SFractions.lua" type="server"/>
+  <script src="CDrawUIPanel.lua" type="client"/>
+</meta>
