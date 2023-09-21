@@ -70,7 +70,7 @@ function setPlayerFraction(player, fraction_id)
             setPlayerTeam(player, fraction.team)
             fraction.members.player = player
             --getPlayerData(player)
-            triggerClientEvent(player, "onUpdatePlayerList", resourceRoot)
+            triggerClientEvent(player, "onUpdatePlayerList", player)
             triggerClientEvent({fraction.leader, player},"onPlayerList",resourceRoot)
         end
     else

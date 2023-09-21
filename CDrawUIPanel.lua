@@ -9,12 +9,12 @@ function clearPlayerList()
             destroyElement(child)
         end
     end
+    displayPlayerList()
 end
 
 
 function displayPlayerList()
     if FRACTION_PANEL and isElement(FRACTION_PANEL) then
-        clearPlayerList(MEMBERS_TAB)
         local member_x = 10
         local member_y = 40
         local fire_x = 220
@@ -47,12 +47,12 @@ function openFactionPanel()
             local management_tab = guiCreateTab("Управление городом", tab_panel)
         end
         local close_button = guiCreateButton(660, 20, 22, 20, "X", false, FRACTION_PANEL)
-        local refresh_button = guiCreateButton(600, 20, 22, 20, "R", false, FRACTION_PANEL)
+        local refresh_button = guiCreateButton(550, 20, 80, 20, "Refresh", false, FRACTION_PANEL)
         
 
         displayPlayerList()
-        local invite_button = guiCreateButton( 10, 370, 80, 20, "Пригласить", false, MEMBERS_TAB )
-        inviteEdit = guiCreateEdit(100, 370, 100, 20, "", false, MEMBERS_TAB)
+        local invite_button = guiCreateButton( 10, 370, 80, 20, "Пригласить", false, FRACTION_PANEL )
+        inviteEdit = guiCreateEdit(100, 370, 100, 20, "", false, FRACTION_PANEL)
 
         addEventHandler("onClientGUIClick", close_button, closeFactionPanel, false)
         addEventHandler("onClientGUIClick", refresh_button, updateFactionMembersList, false)
@@ -66,7 +66,7 @@ bindKey("z", "down", openFactionPanel)
 
 
 function updateFactionMembersList()     
-    triggerServerEvent("onGuiRequestInfo", root, localPlayer)
+    triggerServerEvent("onGuiRequestInfo", root, localPlayer)  
 end
 addEvent("onUpdatePlayerList", true)
 addEventHandler("onUpdatePlayerList", resourceRoot, updateFactionMembersList)
@@ -88,7 +88,7 @@ function receivePlayerData(playerDATA)
     if playerDATA then
         DATA = playerDATA
     end
-    
+    clearPlayerList()
 end
 addEvent("onReceivePlayerData", true)
 addEventHandler("onReceivePlayerData", resourceRoot, receivePlayerData)
