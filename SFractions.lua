@@ -25,6 +25,41 @@ function setPlayerFractionLeader(player, fraction_id)
     end 
 end
 
+function getPlayerData(player_id)
+    data = {}  
+    local player = player_id
+    if player ~= false then
+        if type(getPlayerTeam(player)) ~= "boolean" then
+            local players = getPlayersInTeam(getPlayerTeam(player))
+            for i, playerInTeam in pairs(players) do 
+                local player_data = {}
+                local fraction_id = getFractionId(getTeamName(getPlayerTeam(playerInTeam)))
+                if playerInTeam == fraction_id.leader then
+                    player_data.leader = playerInTeam
+                else 
+                    player_data.leader = nil
+                end
+                player_data.player = playerInTeam
+                player_data.team = getPlayerTeam(playerInTeam)
+                player_data.team_name = getTeamName(getPlayerTeam(playerInTeam))
+                player_data.player_nick = getPlayerName(playerInTeam)
+                player_data.player_id = player_id
+                table.insert(data, player_data)        
+            end
+        else 
+            local player_data = {}
+            player_data.player = player
+            player_data.team = nil
+            player_data.team_name = nil
+            player_data.player_nick = getPlayerName(player)
+            player_data.player_id = player_id
+            table.insert(data, player_data)
+        end
+        triggerClientEvent(player, "onReceivePlayerData", resourceRoot, data)
+    end
+end
+addEvent("onGuiRequestInfo", true)
+addEventHandler("onGuiRequestInfo", root, getPlayerData)
 
 function setPlayerFraction(player, fraction_id)
     local fraction = fraction_id   
@@ -34,8 +69,8 @@ function setPlayerFraction(player, fraction_id)
         else
             setPlayerTeam(player, fraction.team)
             fraction.members.player = player
-            getPlayerData(player)
-            triggerClientEvent(getRootElement(), "onReceivePlayerData", resourceRoot)
+            --getPlayerData(player)
+            triggerClientEvent(player, "onUpdatePlayerList", resourceRoot)
             triggerClientEvent({fraction.leader, player},"onPlayerList",resourceRoot)
         end
     else
@@ -72,6 +107,18 @@ function sendMessageToFraction(player, fraction_id, msg)
 end
 
 
+function getFractionId(fraction_id)
+    for i, fraction in pairs(FRACTIONS) do
+        local f = FRACTIONS
+        if tostring(i) == fraction_id then
+            FRACTION_ID = f[i]
+        end
+    end
+    return FRACTION_ID
+end
+
+
+
 function handleCommand(source, command, ...)
     ARGS = {...}
     PLAYER_ID = ARGS[1]
@@ -86,6 +133,7 @@ function handleCommand(source, command, ...)
     elseif command == "set_player_fraction" then
         if FRACTION_ID.leader == source then
             setPlayerFraction(player, FRACTION_ID)
+            getPlayerData(player)
         else 
         end
     elseif command == "remove_player_from_fraction" then
@@ -108,53 +156,6 @@ addCommandHandler("set_player_fraction", handleCommand)
 addCommandHandler("remove_player_from_fraction", handleCommand)
 addCommandHandler("/f", handleCommand)
 
-
-function getFractionId(fraction_id)
-    for i, fraction in pairs(FRACTIONS) do
-        local f = FRACTIONS
-        if tostring(i) == fraction_id then
-            FRACTION_ID = f[i]
-        end
-    end
-    return FRACTION_ID
-end
-
-
-function getPlayerData(player_id)
-    data = {}  
-    local player = player_id
-    if type(player) ~= "boolean" then
-        local players = getPlayersInTeam(getPlayerTeam(player))
-        if getPlayersInTeam(getPlayerTeam(player)) ~= false then
-            for i, playerInTeam in pairs(players) do 
-                local player_data = {}
-                local fraction_id = getFractionId(getTeamName(getPlayerTeam(playerInTeam)))
-                if playerInTeam == fraction_id.leader then
-                    player_data.leader = playerInTeam
-                else 
-                    player_data.leader = nil
-                end
-                player_data.player = playerInTeam
-                player_data.team = getPlayerTeam(playerInTeam)
-                player_data.team_name = getTeamName(getPlayerTeam(playerInTeam))
-                player_data.player_nick = getPlayerName(playerInTeam)
-                player_data.player_id = player_id
-                table.insert(data, player_data)        
-            end
-        else 
-            local player_data = {}
-            player_data.player = player
-            player_data.team = nil
-            player_data.team_name = nil
-            player_data.player_nick = getPlayerName(player)
-            player_data.player_id = player_id
-            table.insert(data, player_data)
-        end
-        triggerClientEvent(player, "onReceivePlayerData", resourceRoot, data)
-    end
-end
-addEvent("onGuiRequestInfo", true)
-addEventHandler("onGuiRequestInfo", root, getPlayerData)
 
 -- нет проверки данных с клиента
 function onAcceptInvite(invitingPlayerNick)
