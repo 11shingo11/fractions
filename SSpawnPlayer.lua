@@ -1,7 +1,6 @@
 local SPAWN_X, SPAWN_Y, SPAWN_Z = 1959.55, -1714.46, 17
-local PLAYER_IDS = {}
 ID = 1
-
+local PREV_ID = false
 
 function joinHandler()
 	spawnPlayer( source, SPAWN_X, SPAWN_Y, SPAWN_Z )
@@ -13,39 +12,24 @@ addEventHandler("onPlayerJoin", root, joinHandler)
 
 
 function appointPlayerId()
-	PLAYER_IDS[source] = ID
-	triggerClientEvent( source, "onPlayerIdDraw", source, source, ID )
-	ID = ID + 1
-end
---addEventHandler( "onPlayerJoin", root, appointPlayerId )
-
-
-function getPlayerIdFromList( thePlayer )
-	if type( thePlayer ) == "userdata" then
-		for player, player_id in pairs( PLAYER_IDS ) do
-			if player ~= thePlayer and thePlayer ~= nil then --player~=nil 
-				triggerClientEvent( thePlayer, "onReceivePlayerId", client, player_id )
-			end
-		end
+	setElementData(source, "player", source)
+	if PREV_ID ~= false then
+		setElementID(source, PREV_ID)
+		PREV_ID = false
+	else
+		setElementID(source, ID)
 	end
-end
-addEvent("onRequestPlayersId", true)
-addEventHandler("onRequestPlayersId", root, getPlayerIdFromList)
-
-
-function getPlayerFromPlayersIdList(id)
-	for player, player_id in pairs( PLAYER_IDS ) do 		
-		if id == tostring(player_id) then
-			this_player = player
-		end	
-	end	
-	return this_player
+	setElementData(source, "faction_id", nil)--а надо ли оно мне
+	
+	triggerClientEvent( source, "onPlayerIdDraw", source, source, getElementID(source) )
+	ID = ID + 1
 end
 
 
 function playerQuit()
-	if #PLAYER_IDS > 1 then
-		table.remove( PLAYER_IDS, source )
-	end
+	PREV_ID = getElementID(source)
+	
+	setElementData(source, "faction_id", nil)
+	setElementData(source, "player", nil)
 end 
 addEventHandler ( "onPlayerQuit", root, playerQuit )
