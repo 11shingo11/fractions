@@ -20,7 +20,7 @@ function setPlayerFractionLeader(player, fraction_id)
         setPlayerTeam(player, fraction.team)
         local player_team = getPlayerTeam(player)
         fraction.leader = player
-        outputChatBox(fraction.team)    
+        --outputChatBox(fraction.team)    
     else
 
     end 
@@ -75,8 +75,10 @@ function setPlayerFraction(player, fraction_id)
             setPlayerTeam(player, fraction.team)
             outputChatBox("the player "..getPlayerName(player).." now is member of "..fraction.name) 
             fraction.members.player = player
-            --triggerClientEvent(player, "onUpdatePlayerList", player)
-            --triggerClientEvent({fraction.leader, player},"onPlayerList",resourceRoot)
+            for _, player in pairs(getPlayersInTeam(FRACTION_ID.team)) do
+                triggerClientEvent(player, "onReceiveFractionData", resourceRoot, FRACTION_ID)
+                triggerClientEvent(player, "onUpdatePlayerList", resourceRoot)
+            end
         end
     else
     end
@@ -85,9 +87,11 @@ end
 
 function removePlayerFromFraction(player, fraction_id)
     if type(fraction_id) == "string" then
-        fraction_id = getFractionId(fraction_id)
+        fraction_id = getFractionId(player, tostring(fraction_id))
+        outputChatBox("tostring(fraction_id)")
     end
     local fraction = fraction_id
+    --outputChatBox(tostring(fraction_id))
     if fraction then
         if fraction.leader == player then 
             setPlayerTeam(player, nil)
@@ -97,7 +101,10 @@ function removePlayerFromFraction(player, fraction_id)
         else
             fraction.members.player = nil
             setPlayerTeam(player, nil)
-            --triggerClientEvent({fraction.leader, player},"onPlayerList",resourceRoot)
+            for _, player in pairs(getPlayersInTeam(FRACTION_ID.team)) do
+                triggerClientEvent(player, "onReceiveFractionData", resourceRoot, FRACTION_ID)
+                triggerClientEvent(player, "onUpdatePlayerList", resourceRoot)
+            end
         end
 
     else
@@ -150,6 +157,8 @@ function handleCommand(source, command, ...)
     elseif command == "set_player_fraction" then
          if FRACTION_ID.leader == source then
              setPlayerFraction(player, FRACTION_ID)
+             triggerClientEvent({player,getPlayersInTeam(FRACTION_ID.team)}, "onReceiveFractionData", resourceRoot, FRACTION_ID)
+             triggerClientEvent({player,getPlayersInTeam(FRACTION_ID.team)}, "onUpdatePlayerList", resourceRoot)
          else 
          end
     elseif command == "remove_player_from_fraction" then
@@ -164,7 +173,7 @@ function handleCommand(source, command, ...)
         end
     elseif command == "/f" then
         local player = source
-        local fraction_id = getFractionId(getTeamName(getPlayerTeam(source)))
+        local fraction_id = getFractionId(source, getTeamName(getPlayerTeam(source)))
         sendMessageToFraction(source,fraction_id,ARGS[1])
     else
         -- Обработка неизвестной команды.
@@ -178,23 +187,24 @@ addCommandHandler("/f", handleCommand)
 
 
 -- -- нет проверки данных с клиента
-function onAcceptInvite(team, invitedPlayerNick)
-    local invited_player = getPlayerFromName(invitedPlayerNick)
-    local fraction_id = getFractionId(invited_player, getTeamName(team))
-    if invitingPlayer then
-        setPlayerFraction(invited_player, fraction_id)
-        setPlayerTeam(source, team)
-    end
+function onAcceptInvite(team, leader, invited_player)
+    outputChatBox("5")  
+    local fraction_id = getFractionId(leader, getTeamName(team))
+    outputChatBox("6")  
+    setPlayerFraction(invited_player, fraction_id)
+    setPlayerTeam(invited_player, team)
 end
 addEvent("onAcceptInvite", true)
 addEventHandler("onAcceptInvite", root, onAcceptInvite)
 
+
 -- нет проверки данных с клиента
-function onInvitePlayer(invitingPlayerNick, team, invitedPlayerNick, message)
-    local invitedPlayer = getPlayerFromName(invitedPlayerNick)
+function onInvitePlayer(leader, team, invited_player_nick, message)
+    outputChatBox("3")
+    local invited_player = getPlayerFromName(invited_player_nick)
     local team = team
-    if invitedPlayer then
-        triggerClientEvent(invitedPlayer, "onReceiveInvite", resourceRoot, team, invitingPlayerNick, message)
+    if invited_player then
+        triggerClientEvent(invited_player, "onReceiveInvite", resourceRoot, team, leader, invited_player, message)
     end
 end
 addEvent("onInvitePlayer", true)
