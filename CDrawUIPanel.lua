@@ -120,36 +120,37 @@ addEventHandler("onReceiveFractionData", resourceRoot, receiveFractionData)
 
 
 
--- function invitePlayer(invited_player_nick)
---     local playerName = getPlayerName(localPlayer)
---     local message = playerName .. " приглашает вас вступить в " .. DATA[1].team_name 
---     triggerServerEvent("onInvitePlayer", localPlayer,playerName, invited_player_nick, message)
--- end
+function invitePlayer(invited_player_nick)
+    local playerName = getPlayerName(localPlayer)
+    local team = FRACTION.team
+    local message = playerName .. " приглашает вас вступить в " .. FRACTION.name
+    triggerServerEvent("onInvitePlayer", localPlayer, playerName, team, invited_player_nick, message)
+end
 
 
--- function invitePlayerFromInput()
---     local invited_player_nick = guiGetText(inviteEdit) 
---     if invited_player_nick and invited_player_nick ~= "" then
---         invitePlayer(invited_player_nick)
---     end
--- end
+function invitePlayerFromInput()
+    local invited_player_nick = guiGetText(inviteEdit) 
+    if invited_player_nick and invited_player_nick ~= "" then
+        invitePlayer(invited_player_nick)
+    end
+end
 
 
--- function receiveInvite(inviting_player_nick, message)
---     local invite_window = guiCreateWindow(0.3, 0.3, 0.4, 0.2, "Приглашение во фракцию", true)
---     local invite_label = guiCreateLabel(0.1, 0.2, 0.8, 0.3, message, true, invite_window)
---     local accept_button = guiCreateButton(0.2, 0.6, 0.3, 0.2, "Принять", true, invite_window)
---     local decline_button = guiCreateButton(0.5, 0.6, 0.3, 0.2, "Отказаться", true, invite_window)
---     guiSetInputEnabled(true)
---     addEventHandler("onClientGUIClick", accept_button, function()
---         triggerServerEvent("onAcceptInvite", localPlayer, inviting_player_nick) 
---         destroyElement(invite_window)
---         guiSetInputEnabled(false) 
---     end, false)
---     addEventHandler("onClientGUIClick", decline_button, function()
---         destroyElement(invite_window)
---         guiSetInputEnabled(false)
---     end, false)
--- end
--- addEvent("onReceiveInvite", true)
--- addEventHandler("onReceiveInvite", resourceRoot, receiveInvite)
+function receiveInvite(team, inviting_player_nick, message)
+    local invite_window = guiCreateWindow(0.3, 0.3, 0.4, 0.2, "Приглашение во фракцию "..getTeamName(team), true)
+    local invite_label = guiCreateLabel(0.1, 0.2, 0.8, 0.3, message, true, invite_window)
+    local accept_button = guiCreateButton(0.2, 0.6, 0.3, 0.2, "Принять", true, invite_window)
+    local decline_button = guiCreateButton(0.5, 0.6, 0.3, 0.2, "Отказаться", true, invite_window)
+    guiSetInputEnabled(true)
+    addEventHandler("onClientGUIClick", accept_button, function()
+        triggerServerEvent("onAcceptInvite", localPlayer, team, inviting_player_nick) 
+        destroyElement(invite_window)
+        guiSetInputEnabled(false) 
+    end, false)
+    addEventHandler("onClientGUIClick", decline_button, function()
+        destroyElement(invite_window)
+        guiSetInputEnabled(false)
+    end, false)
+end
+addEvent("onReceiveInvite", true)
+addEventHandler("onReceiveInvite", resourceRoot, receiveInvite)

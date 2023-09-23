@@ -121,7 +121,7 @@ function getFractionId(player, fraction_id)
             FRACTION_ID = f[i]
         end
     end
-    outputChatBox("get fractionId name : "..tostring(player))
+    outputChatBox("get fractionId name : "..type(FRACTION_ID))
     
     return FRACTION_ID
     --triggerClientEvent(player, "onReceiveFractionData", resourceRoot, FRACTION_ID)
@@ -178,23 +178,24 @@ addCommandHandler("/f", handleCommand)
 
 
 -- -- нет проверки данных с клиента
--- function onAcceptInvite(invitingPlayerNick)
---     local invitingPlayer = getPlayerFromName(invitingPlayerNick)
---     local fraction_id = getFractionId("city_mayor")
---     if invitingPlayer then
---         setPlayerFraction(invitingPlayer, fraction_id)
---         setPlayerTeam(source, getPlayerTeam(invitingPlayer))
---     end
--- end
--- addEvent("onAcceptInvite", true)
--- addEventHandler("onAcceptInvite", root, onAcceptInvite)
+function onAcceptInvite(team, invitedPlayerNick)
+    local invited_player = getPlayerFromName(invitedPlayerNick)
+    local fraction_id = getFractionId(invited_player, getTeamName(team))
+    if invitingPlayer then
+        setPlayerFraction(invited_player, fraction_id)
+        setPlayerTeam(source, team)
+    end
+end
+addEvent("onAcceptInvite", true)
+addEventHandler("onAcceptInvite", root, onAcceptInvite)
 
--- -- нет проверки данных с клиента
--- function onInvitePlayer(invitingPlayerNick, invitedPlayerNick, message)
---     local invitedPlayer = getPlayerFromName(invitedPlayerNick)
---     if invitedPlayer then
---         triggerClientEvent(invitedPlayer, "onReceiveInvite", resourceRoot, invitingPlayerNick, message)
---     end
--- end
--- addEvent("onInvitePlayer", true)
--- addEventHandler("onInvitePlayer", root, onInvitePlayer)
+-- нет проверки данных с клиента
+function onInvitePlayer(invitingPlayerNick, team, invitedPlayerNick, message)
+    local invitedPlayer = getPlayerFromName(invitedPlayerNick)
+    local team = team
+    if invitedPlayer then
+        triggerClientEvent(invitedPlayer, "onReceiveInvite", resourceRoot, team, invitingPlayerNick, message)
+    end
+end
+addEvent("onInvitePlayer", true)
+addEventHandler("onInvitePlayer", root, onInvitePlayer)
