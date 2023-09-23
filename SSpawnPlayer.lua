@@ -28,7 +28,7 @@ end
 
 function playerQuit()
 	PREV_ID = getElementID(source)
-	
+	-- реализовать список отвязаных айди
 	setElementData(source, "faction_id", nil)
 	setElementData(source, "player", nil)
 end 

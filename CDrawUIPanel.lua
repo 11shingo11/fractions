@@ -27,11 +27,11 @@ function displayPlayerList()
         local member_y = 40
         local fire_x = 220
         local fire_y = 40
-        local member_label = guiCreateLabel(member_x, member_y, 200, 20, getPlayerName(FRACTION.leader), false, MEMBERS_TAB)
+        local member_label = guiCreateLabel(member_x, member_y, 200, 20, "ID: "..getElementID(FRACTION.leader).."   "..getPlayerName(FRACTION.leader), false, MEMBERS_TAB)
         for i, player in pairs(FRACTION.members) do
             outputChatBox("display")
             member_y = member_y + 20 
-            local member_label = guiCreateLabel(member_x, member_y, 200, 20, getPlayerName(player), false, MEMBERS_TAB)
+            local member_label = guiCreateLabel(member_x, member_y, 200, 20, "ID: "..getElementID(player).."   "..getPlayerName(player), false, MEMBERS_TAB)
             --member_y = member_y + 20         
             if localPlayer == FRACTION.leader then
                 fire_y = fire_y + 20
@@ -137,6 +137,7 @@ end
 
 function invitePlayerFromInput()
     outputChatBox("1")
+    -- реализовать кд на инвайт
     local invited_player_nick = guiGetText(inviteEdit) 
     if invited_player_nick and invited_player_nick ~= "" then
         invitePlayer(invited_player_nick)

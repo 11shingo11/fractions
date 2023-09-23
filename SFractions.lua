@@ -186,19 +186,21 @@ addCommandHandler("remove_player_from_fraction", handleCommand)
 addCommandHandler("/f", handleCommand)
 
 
--- -- нет проверки данных с клиента
+-- -- нет проверки данных с клиента доделать проверку
 function onAcceptInvite(team, leader, invited_player)
-    outputChatBox("5")  
-    local fraction_id = getFractionId(leader, getTeamName(team))
-    outputChatBox("6")  
-    setPlayerFraction(invited_player, fraction_id)
-    setPlayerTeam(invited_player, team)
+    if type(team) =="team" and type(leader) == "userdata" and type(invited_player) == "userdata" then
+        outputChatBox("5")  
+        local fraction_id = getFractionId(leader, getTeamName(team))
+        outputChatBox("6")  
+        setPlayerFraction(invited_player, fraction_id)
+        setPlayerTeam(invited_player, team)
+    end
 end
 addEvent("onAcceptInvite", true)
 addEventHandler("onAcceptInvite", root, onAcceptInvite)
 
 
--- нет проверки данных с клиента
+-- -- нет проверки данных с клиента доделать проверку
 function onInvitePlayer(leader, team, invited_player_nick, message)
     outputChatBox("3")
     local invited_player = getPlayerFromName(invited_player_nick)
