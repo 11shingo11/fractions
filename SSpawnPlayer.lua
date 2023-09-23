@@ -7,7 +7,7 @@ function joinHandler()
 	spawnPlayer( source, SPAWN_X, SPAWN_Y, SPAWN_Z )
 	fadeCamera( source, true )
 	setCameraTarget( source, source )   
-	
+	appointPlayerId()
 end
 addEventHandler("onPlayerJoin", root, joinHandler)
 
@@ -17,7 +17,7 @@ function appointPlayerId()
 	triggerClientEvent( source, "onPlayerIdDraw", source, source, ID )
 	ID = ID + 1
 end
-addEventHandler( "onPlayerJoin", root, appointPlayerId )
+--addEventHandler( "onPlayerJoin", root, appointPlayerId )
 
 
 function getPlayerIdFromList( thePlayer )
