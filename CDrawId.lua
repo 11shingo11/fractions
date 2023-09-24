@@ -1,7 +1,7 @@
 local KEY 
 local PLAYER 
-local PLAYER_ID_TEXT = ""
-CURRENT_PLAYER_ID_TEXT = ""
+
+
 function setPlayerId( thePlayer, player_id )
     KEY = player_id
     PLAYER = thePlayer
@@ -16,7 +16,6 @@ function drawLocalPlayerId()
 end
 addEventHandler( "onClientRender", root, drawLocalPlayerId )
 
- -- Таблица для хранения ID игроков
 
 function drawOtherPlayersId()
     local players = getElementsByType( "player" )
@@ -33,10 +32,5 @@ function drawOtherPlayersId()
 end
 addEventHandler( "onClientRender", root, drawOtherPlayersId )
 
-function receivePlayerId(player_id)
-    PLAYER_ID_TEXT = player_id  -- Сохраняем ID игрока в таблице
-end
-addEvent("onReceivePlayerId", true)
-addEventHandler("onReceivePlayerId", root, receivePlayerId)
 
 
