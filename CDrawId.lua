@@ -18,7 +18,8 @@ addEventHandler( "onClientRender", root, drawLocalPlayerId )
 
 
 function drawOtherPlayersId()
-    local players = getElementsByType( "player" )
+    local x, y, z = getElementPosition( localPlayer )
+    local players = getElementsWithinRange(x, y, z, 30, "player" )
     for _, thePlayer in pairs( players ) do
         if thePlayer ~= localPlayer then
             local player_id = getElementID(thePlayer)

@@ -14,14 +14,14 @@ addEventHandler("onPlayerJoin", root, joinHandler)
 
 function appointPlayerId()
 	setElementData(source, "player", source)
-	if table.maxn(PREV_IDS) ~= 0 then
+	if next(PREV_IDS) then
 		tryToGetIdFromPrevIds()
 		setElementID(source, PREV_ID)
 	else
 		setElementID(source, ID)
 		ID = ID + 1
 	end
-	setElementData(source, "faction_id", nil)--а надо ли оно мне
+	setElementData(source, "fraction_id", nil)-- убираем createteam и делаем через юзер дату
 	
 	triggerClientEvent( source, "onPlayerIdDraw", source, source, getElementID(source) )
 end

@@ -6,7 +6,7 @@ local INVITE_COOLDOWN = 60 * 1000
 
 
 function getFractionData()
-    triggerServerEvent("onGetFractionId", resourceRoot, localPlayer, getTeamName(getPlayerTeam(localPlayer)))
+    triggerServerEvent("onGetFractionId", resourceRoot, localPlayer, getElementData(localPlayer, "fraction_id"))
 end
 
 
@@ -27,11 +27,9 @@ addEventHandler("onReceiveFractionData", resourceRoot, receiveFractionData)
 function displayPlayerList()
     if FRACTION_PANEL and isElement(FRACTION_PANEL) then
         local member_x = 10
-        local member_y = 40
+        local member_y = 10
         local fire_x = 220
-        local fire_y = 40
-        local member_label = guiCreateLabel(member_x, member_y, 200, 20, "ID: "..getElementID(FRACTION.leader).."   "..getPlayerName(FRACTION.leader), false, MEMBERS_TAB)
-        
+        local fire_y = 10       
         for i, player in pairs(FRACTION.members) do
             member_y = member_y + 20 
             local member_label = guiCreateLabel(member_x, member_y, 200, 20, "ID: "..getElementID(player).."   "..getPlayerName(player), false, MEMBERS_TAB)       
@@ -70,9 +68,7 @@ end
 
 
 function openFactionPanel()
-    --getFractionData()
-    if getPlayerTeam(localPlayer) then
-        --clearPlayerList()
+    if getElementData(localPlayer, "fraction_id") ~= nil then
         DrawFactionPanel()
         displayPlayerList()
     end
@@ -99,7 +95,7 @@ addEventHandler("onReceiveFractionData", resourceRoot, receiveFractionData)
 
 
 function firePlayer(player)
-    local fraction_id = getTeamName(FRACTION.team)
+    local fraction_id = getElementData(player, "fraction_id")
     triggerServerEvent("onRemovePlayerFromFraction", root, player, fraction_id)
 end
 
@@ -110,10 +106,8 @@ function invitePlayer(invited_player_nick)
     local leader = getPlayerName(localPlayer)
     local team = FRACTION.team
     local message = leader .. " приглашает вас вступить в " .. FRACTION.name
-
-    if type(leader) == "string" and type(team) == "userdata" and type(invited_player_nick) == "string" and type(message) == "string" then  
-        triggerServerEvent("onInvitePlayer", localPlayer, leader, team, invited_player_nick, message)
-    end
+    table.remove( LAST_INVITED_TIME, LAST_INVITED_TIME[invited_player_nick] ) 
+    triggerServerEvent("onInvitePlayer", localPlayer, leader, team, invited_player_nick, message)
 end
 
 
@@ -124,9 +118,9 @@ function invitePlayerFromInput()
         local player = getPlayerFromName(invited_player_nick)
         local currentTime = getTickCount()
 
-        if not LAST_INVITED_TIME[invited_player_nick] or currentTime - LAST_INVITED_TIME[invited_player_nick] >= INVITE_COOLDOWN then
+        if not LAST_INVITED_TIME[ invited_player_nick ] or currentTime - LAST_INVITED_TIME[invited_player_nick] >= INVITE_COOLDOWN then
             invitePlayer(invited_player_nick)
-            LAST_INVITED_TIME[invited_player_nick] = currentTime
+            LAST_INVITED_TIME[ invited_player_nick ] = currentTime
         else
             outputChatBox("Подождите, прежде чем отправить новое приглашение этому игроку.")
         end
