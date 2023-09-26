@@ -9,38 +9,38 @@ function joinHandler()
 	setCameraTarget( source, source )  
 	appointPlayerId()
 end
-addEventHandler("onPlayerJoin", root, joinHandler)
+addEventHandler( "onPlayerJoin", root, joinHandler )
 
 
 function appointPlayerId()
-	setElementData(source, "player", source)
-	if next(PREV_IDS) then
+	setElementData( source, "player", source )
+	if next( PREV_IDS ) then
 		tryToGetIdFromPrevIds()
-		setElementID(source, PREV_ID)
+		setElementID( source, PREV_ID )
 	else
-		setElementID(source, ID)
+		setElementID( source, ID ) 
 		ID = ID + 1
 	end
-	setElementData(source, "fraction_id", nil)-- убираем createteam и делаем через юзер дату
+	setElementData( source, "fraction_id", nil ) 
 	
-	triggerClientEvent( source, "onPlayerIdDraw", source, source, getElementID(source) )
+	triggerClientEvent( source, "onPlayerIdDraw", source, source, getElementID( source ) )
 end
 
 
 function playerQuit()
-	table.insert(PREV_IDS, getElementID(source))
-	setElementData(source, "faction_id", nil)
-	setElementData(source, "player", nil)
-	triggerClientEvent(source, "onClearInviteList", resourceRoot)
+	table.insert( PREV_IDS, getElementID( source ) )
+	setElementData( source, "faction_id", nil )
+	setElementData( source, "player", nil )
+	triggerClientEvent( source, "onClearInviteList", resourceRoot ) 
 end 
 addEventHandler ( "onPlayerQuit", root, playerQuit )
 
 
 function tryToGetIdFromPrevIds()
-	for _, ID in pairs(PREV_IDS) do
+	for _, ID in pairs( PREV_IDS ) do
 		if ID ~= nil then
 			PREV_ID = ID
-			table.remove(PREV_IDS, _)
+			table.remove( PREV_IDS, _ )
 			break
 		end
 	end

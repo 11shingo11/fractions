@@ -19,10 +19,10 @@ addEventHandler( "onClientRender", root, drawLocalPlayerId )
 
 function drawOtherPlayersId()
     local x, y, z = getElementPosition( localPlayer )
-    local players = getElementsWithinRange(x, y, z, 30, "player" )
+    local players = getElementsWithinRange( x, y, z, 30, "player" )
     for _, thePlayer in pairs( players ) do
         if thePlayer ~= localPlayer then
-            local player_id = getElementID(thePlayer)
+            local player_id = getElementID( thePlayer )
             local player_x, player_y, player_z = getElementPosition( thePlayer )
             local screen_x, screen_y = getScreenFromWorldPosition( player_x, player_y, player_z + 1 )
             if screen_x and screen_y then
