@@ -15,7 +15,6 @@ addEventHandler("onResourceStart", resourceRoot, createTeamsOnStart)
 
 
 function sendDataToAllPlayersInFraction(team, fraction_id)
-    outputChatBox("send Data")
     players = getElementsByType( "player" )
     for _, player in pairs(players) do 
         if getElementData(player, "fraction_id") == team then
@@ -43,22 +42,14 @@ function setPlayerFraction(player, fraction_id)
     local fraction = fraction_id   
 
     if fraction then
-
         if fraction.leader == player then
-            outputChatBox("set to 2"..fraction.team)
+            
         elseif getElementData(player, "fraction_id") ~= nil then
-            outputChatBox("set to 3"..fraction.team)
-        else
-            outputChatBox("set to "..type(fraction.team))
+            
+        else           
             setElementData(player, "fraction_id", fraction.team)
-            outputChatBox("set to "..getElementData(player, "fraction_id"))
-            --setPlayerTeam(player, fraction.team)
             table.insert(fraction.members, player)
             sendDataToAllPlayersInFraction( fraction.team, fraction )
-            -- for _, player in pairs(getPlayersInTeam(FRACTION_ID.team)) do
-            --     triggerClientEvent(player, "onReceiveFractionData", resourceRoot, FRACTION_ID)
-            --     triggerClientEvent(player, "onUpdatePlayerList", resourceRoot)
-            -- end
         end
     else
         
@@ -171,23 +162,21 @@ addCommandHandler("/f", handleCommand)
 
 
 
--- function onAcceptInvite(team, leader, invited_player)
---     local fraction_id = getFractionId(leader, getTeamName(team))
---     setPlayerFraction(invited_player, fraction_id)
---     setPlayerTeam(invited_player, team)
--- end
--- addEvent("onAcceptInvite", true)
--- addEventHandler("onAcceptInvite", root, onAcceptInvite)
+function onAcceptInvite(team, leader, invited_player)
+    local fraction_id = team
+    setPlayerFraction(invited_player, fraction_id)
+end
+addEvent("onAcceptInvite", true)
+addEventHandler("onAcceptInvite", root, onAcceptInvite)
 
 
--- function onInvitePlayer(leader, team, invited_player_nick, message)
---     local invited_player = getPlayerFromName(invited_player_nick)
---     if invited_player then
---         triggerClientEvent(invited_player, "onReceiveInvite", resourceRoot, team, leader, invited_player, message)
---     end
--- end
--- addEvent("onInvitePlayer", true)
--- addEventHandler("onInvitePlayer", root, onInvitePlayer)
+function onInvitePlayer(leader, team, invited_player, message)
+    if invited_player then
+        triggerClientEvent(invited_player, "onReceiveInvite", resourceRoot, team, leader, invited_player, message)
+    end
+end
+addEvent("onInvitePlayer", true)
+addEventHandler("onInvitePlayer", root, onInvitePlayer)
 
 
 

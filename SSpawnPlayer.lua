@@ -31,6 +31,7 @@ function playerQuit()
 	table.insert(PREV_IDS, getElementID(source))
 	setElementData(source, "faction_id", nil)
 	setElementData(source, "player", nil)
+	triggerClientEvent(source, "onClearInviteList", resourceRoot)
 end 
 addEventHandler ( "onPlayerQuit", root, playerQuit )
 
@@ -38,7 +39,6 @@ addEventHandler ( "onPlayerQuit", root, playerQuit )
 function tryToGetIdFromPrevIds()
 	for _, ID in pairs(PREV_IDS) do
 		if ID ~= nil then
-			outputChatBox(ID)
 			PREV_ID = ID
 			table.remove(PREV_IDS, _)
 			break
